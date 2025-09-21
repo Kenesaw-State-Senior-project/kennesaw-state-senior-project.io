@@ -11,13 +11,13 @@
       </div>
     <div>
       
-      <img src="/groupimages/Ale.png" alt="Photo of Ale">
+ <img src="/groupimages/Ale.png" alt="Photo of Ale">
     </div>
     <div>
-      <img src="/groupimages/Evan.png" alt="Photo of Evan">
+<img src="/groupimages/Evan.png" alt="Photo of Evan">
     </div>
     <div>
-      <img src="/groupimages/Jose.png" alt="Photo of Jose">
+<img src="/groupimages/Jose.png" alt="Photo of Jose">
       </div>
     
   </body>
