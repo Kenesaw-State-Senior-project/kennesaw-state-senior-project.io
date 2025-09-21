@@ -8,17 +8,16 @@
     <div>
       <p>Show text</p>
       <img src="/groupimages/Ryan.png" alt="Photo of Ryan">
-      </div>
-    <div>
-      
- <img src="/groupimages/Ale.png" alt="Photo of Ale">
     </div>
     <div>
-<img src="/groupimages/Evan.png" alt="Photo of Evan">
+      <img src="/groupimages/Ale.png" alt="Photo of Ale">
     </div>
     <div>
-<img src="/groupimages/Jose.png" alt="Photo of Jose">
-      </div>
+      <img src="/groupimages/Evan.png" alt="Photo of Evan">
+    </div>
+    <div>
+      <img src="/groupimages/Jose.png" alt="Photo of Jose">
+    </div>
     
   </body>
   
