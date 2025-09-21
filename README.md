@@ -5,7 +5,7 @@
  
   </head>
   <body>
-       <img src="Ryan.png" alt="Photo of Ryan">
+       <img src="/groupimages/Ryan.png" alt="Photo of Ryan">
     
   </body>
   
