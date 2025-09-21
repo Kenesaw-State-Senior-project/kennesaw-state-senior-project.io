@@ -6,9 +6,11 @@
   </head>
   <body>
     <div>
+      <p>Show text</p>
       <img src="/groupimages/Ryan.png" alt="Photo of Ryan">
       </div>
     <div>
+      
       <img src="/groupimages/Ale.png" alt="Photo of Ale">
     </div>
     <div>
