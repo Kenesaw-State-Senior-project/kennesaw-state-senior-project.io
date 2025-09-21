@@ -2,7 +2,11 @@
 <html>
   <head>
     <title> Spotify app seniot project</title>
-    <img src="Ryan.png" alt="Photo of Ryan">
+ 
   </head>
+  <body>
+       <img src="Ryan.png" alt="Photo of Ryan">
+    
+  </body>
   
 </html>
