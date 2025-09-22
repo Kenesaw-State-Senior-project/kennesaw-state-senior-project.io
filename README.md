@@ -1,4 +1,5 @@
 # kennesaw-state-senior-project.io
+<!DOCTYPE html>
 <html>
   <head>
     <title> Spotify app senior project</title>
