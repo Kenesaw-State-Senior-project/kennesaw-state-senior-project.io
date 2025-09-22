@@ -10,6 +10,7 @@
       <img src="/groupimages/Ryan.png" alt="Photo of Ryan" width="128" height="128" >
     </div>
     <div>
+       <p>Show text</p>
       <img src="/groupimages/Ale.png" alt="Photo of Ale" width="128" height="128">
     </div>
     <div>
