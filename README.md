@@ -7,16 +7,16 @@
   <body>
     <div>
       <p>Show text</p>
-      <img src="/groupimages/Ryan.png" alt="Photo of Ryan">
+      <img src="/groupimages/Ryan.png" alt="Photo of Ryan" width="128" height="128" >
     </div>
     <div>
-      <img src="/groupimages/Ale.png" alt="Photo of Ale">
+      <img src="/groupimages/Ale.png" alt="Photo of Ale" width="128" height="128">
     </div>
     <div>
-      <img src="/groupimages/Evan.png" alt="Photo of Evan">
+      <img src="/groupimages/Evan.png" alt="Photo of Evan" width="128" height="128">
     </div>
     <div>
-      <img src="/groupimages/Jose.png" alt="Photo of Jose">
+      <img src="/groupimages/Jose.png" alt="Photo of Jose" width="128" height="128">
     </div>
     
   </body>
