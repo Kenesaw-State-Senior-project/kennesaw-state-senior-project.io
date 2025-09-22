@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 # kennesaw-state-senior-project.io
 <html>
   <head>
