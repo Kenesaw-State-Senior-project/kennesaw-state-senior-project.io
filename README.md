@@ -7,7 +7,7 @@
   <body>
     <div>
       <p>Show text</p>
-      <img src="main/groupimages/Ryan.png" alt="Photo of Ryan" width="128" height="128" >
+      <img src="/groupimages/Ryan.png" alt="Photo of Ryan" width="128" height="128" >
     </div>
     <div>
        <p>Show text</p>
