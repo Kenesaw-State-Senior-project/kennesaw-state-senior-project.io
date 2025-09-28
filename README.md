@@ -6,7 +6,7 @@
        border:20px solid red; 
      }
      body {
-       border: 150px solid Aqua;
+       border: 50px solid Aqua;
     
      }
    </style>
