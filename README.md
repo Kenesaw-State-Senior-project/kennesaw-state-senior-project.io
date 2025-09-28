@@ -1,7 +1,11 @@
 # kennesaw-state-senior-project.io
 <html>
   <head>
-   
+   <style>
+     body{
+       outline:#5F9EAO solid 30px
+     }
+   </style>
  
   </head>
   
