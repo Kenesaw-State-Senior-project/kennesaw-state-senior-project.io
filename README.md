@@ -2,6 +2,9 @@
 <html>
   <head>
    <style>
+     img{
+       border:20px solid red; 
+     }
      body {
        border: 150px solid Aqua;
     
