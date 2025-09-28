@@ -4,7 +4,7 @@
    <style>
      p{
        border: Aqua solid 30px;
-       margin: auto
+       margin: auto;
      }
    </style>
  
