@@ -3,8 +3,8 @@
   <head>
    <style>
      body{
-       border: Aqua solid ;
-       margin: auto;
+       border: 30px solid Aqua;
+    
      }
    </style>
  
