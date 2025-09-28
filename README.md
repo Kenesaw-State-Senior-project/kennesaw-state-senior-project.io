@@ -24,7 +24,7 @@
     <p>Role:Documents</p>
   </div>
   <div>
-    <img src="groupimages/Evan.png" alt="Photo of Evan" width="128" height="128">
+    <img src="groupimages/Evan.png" alt="Photo of Evan" width="1208" height="128">
     <p>Role:Developer</p>
   </div>
   <div>
