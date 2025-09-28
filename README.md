@@ -2,7 +2,7 @@
 <html>
   <head>
    <style>
-     body{
+     p{
        border: Aqua solid 30px;
        margin: auto
      }
