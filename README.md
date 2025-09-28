@@ -3,7 +3,8 @@
   <head>
    <style>
      body{
-       outline:#5F9EAO solid 30px;
+       outline:Aqua solid 30px;
+       margin: auto
      }
    </style>
  
