@@ -3,7 +3,7 @@
   <head>
    <style>
      body{
-       outline:#5F9EAO solid 30px
+       outline:#5F9EAO solid 30px;
      }
    </style>
  
