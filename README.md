@@ -3,7 +3,7 @@
   <head>
    <style>
      img{
-       border:20px solid red; 
+       border:20px solid gray; 
      }
      body {
        border: 50px solid Aqua;
