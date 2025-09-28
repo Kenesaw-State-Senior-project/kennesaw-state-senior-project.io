@@ -2,8 +2,8 @@
 <html>
   <head>
    <style>
-     body{
-       border: 30px solid Aqua;
+     body {
+       border: 150px solid Aqua;
     
      }
    </style>
