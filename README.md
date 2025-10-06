@@ -31,6 +31,12 @@
     <img src="groupimages/Jose.png" alt="Photo of Jose" width="128" height="128">
     <p>Role:Developer</p>
   </div>
+  <h>
+    Overview:
+  </h>
+  <p>
+    Our app is the upgraded version of the regular spotify holding a couple of things the original spotify needs. One of those things in particular is more metrics our app will display things like how many times people have played this song, how many times you have played this song, what year the song was released, the popularity of 	the song, and who it was written by.Our app will also search for the song based on either the lyrics or what you hummed into the app to search for a song matching the lyrics or notes of what you hummed. 
+  </p>
     
  </body>
   
