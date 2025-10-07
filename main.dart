@@ -1,9 +1,16 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:mobile_app/api/spotify_api.dart';
 import 'package:provider/provider.dart';
+import 'search.dart';
 
 void main() {
+  const clientId = 'b006b52f30d74faca0a2f9ba67ada433';
+  const clientSecret = 'c54f7757c3a64b5792cc276a77e81b5b';
+
+  final api = SpotifyApi(clientId, clientSecret);
+
   runApp(MyApp());
 }
 
@@ -59,10 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (selectedIndex) {
       case 0:
         page = GeneratorPage();
-        break;
       case 1:
         page = FavoritesPage();
-        break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -127,6 +132,7 @@ class GeneratorPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SearchBox(),
           BigCard(pair: pair),
           SizedBox(height: 10),
           Row(
@@ -155,6 +161,7 @@ class GeneratorPage extends StatelessWidget {
 }
 
 class FavoritesPage extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
 
