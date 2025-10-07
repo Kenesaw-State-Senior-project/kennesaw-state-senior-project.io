@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'autherization.dart';
+import 'authorization.dart';
 
 class SearchBox extends StatefulWidget {
   @override
@@ -42,12 +42,14 @@ class _SearchBoxState extends State<SearchBox> {
 
   // After Authentication
   Future<Map<String, dynamic>> searchSpotify(String query) async {
+    final url = Uri.https('api.spotify.com', '/v1/search', {
+      'q': query,
+      'type': 'track, artist, album',
+    });
     final String accessToken =
         getAccessToken() as String; // Replace with authentication key
     final response = await http.get(
-      Uri.parse(
-        'https://api.spotify.com/v1/search?q=$query&type=track,artist,album',
-      ),
+      url,
       headers: {'Authorization': 'Bearer $accessToken'},
     );
 
@@ -55,7 +57,7 @@ class _SearchBoxState extends State<SearchBox> {
       // Process search results from JSON response
       return json.decode(response.body);
     } else {
-      print('Error searching Spotify: ${response.statusCode}');
+      throw Exception('Failed to load search results: ${response.statusCode}');
     }
   }
 }
