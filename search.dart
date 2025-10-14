@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_app/models/artist.dart';
 import 'dart:convert';
 import 'api/spotify_api.dart';
 
@@ -33,15 +34,22 @@ class _SearchBoxState extends State<SearchBox> {
           print('Search query: $query');
         },
         onSubmitted: (query) {
-          //searchSpotify(query);
+              searchSpotify(
+                    query,
+                    'b006b52f30d74faca0a2f9ba67ada433',
+                    'c54f7757c3a64b5792cc276a77e81b5b',
+                  );
+
           print('Submitted search query: $query');
+
+          //formatResponse(jsonDecode(query));
         },
       ),
     );
   }
 
   // After Authentication
-  Future<Map<String, dynamic>> searchSpotify(
+  Future<Future<List<Artist>>> searchSpotify(
     String query,
     String clientID,
     String clientSecret,
@@ -51,19 +59,32 @@ class _SearchBoxState extends State<SearchBox> {
       'q': query,
       'type': 'track, artist, album',
     });
-    final String accessToken =
-        await api.getAccessToken(); // Replace with authentication key
-    final response = await http.get(
-      url,
-      headers: {'Authorization': 'Bearer $accessToken'},
-    );
 
-    if (response.statusCode == 200) {
-      // Process search results from JSON response
-      print("Search Successful: ${response.body}");
-      return json.decode(response.body);
-    } else {
-      throw Exception('Failed to load search results: ${response.statusCode}');
+    return api.searchArtist(query);
+  }
+
+  formatResponse(Map<String, dynamic> data) {
+    //Extract track name
+    String trackName = data['name'];
+
+    // Extract artist name/s
+    List<dynamic> artists = data['artists'];
+    List<String> artistNames = artists
+        .map((artist) => artist['name'] as String)
+        .toList();
+    String artistSTR = artistNames.join(', ');
+
+    // Extract album art (ex. the largest image)
+    List<dynamic> albumImages = data['album']['images'];
+    String? albumArtURL;
+    if (albumImages.isNotEmpty) {
+      albumArtURL = albumImages[0]['url'];
+    }
+
+    print('Track Name: $trackName');
+    print('Artist(s): $artistSTR');
+    if (albumArtURL != null) {
+      print('Album Art URL: $albumArtURL');
     }
   }
 }

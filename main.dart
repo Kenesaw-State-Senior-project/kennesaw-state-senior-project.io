@@ -2,6 +2,7 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mobile_app/api/spotify_api.dart';
+import 'package:mobile_app/providers/music_provider.dart';
 import 'package:provider/provider.dart';
 import 'search.dart';
 
@@ -11,7 +12,12 @@ void main() {
 
   final api = SpotifyApi(clientId, clientSecret);
 
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => MusicProvider(api),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
