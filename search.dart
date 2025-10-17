@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_app/authorization.dart';
 import 'package:mobile_app/models/artist.dart';
+import 'package:mobile_app/models/track.dart';
+import 'package:spotify_sdk/models/track.dart' hide Track;
 import 'dart:convert';
 import 'api/spotify_api.dart';
 
@@ -34,13 +37,19 @@ class _SearchBoxState extends State<SearchBox> {
           print('Search query: $query');
         },
         onSubmitted: (query) {
-              searchSpotify(
-                    query,
-                    'b006b52f30d74faca0a2f9ba67ada433',
-                    'c54f7757c3a64b5792cc276a77e81b5b',
-                  );
-
           print('Submitted search query: $query');
+
+          searchSpotifyArtists(
+            query,
+            'b006b52f30d74faca0a2f9ba67ada433',
+            'c54f7757c3a64b5792cc276a77e81b5b',
+          );
+
+          searchSpotifyTracks(
+            query,
+            'b006b52f30d74faca0a2f9ba67ada433',
+            'c54f7757c3a64b5792cc276a77e81b5b',
+          );
 
           //formatResponse(jsonDecode(query));
         },
@@ -49,42 +58,23 @@ class _SearchBoxState extends State<SearchBox> {
   }
 
   // After Authentication
-  Future<Future<List<Artist>>> searchSpotify(
+  Future<Future<List<Artist>>> searchSpotifyArtists(
     String query,
     String clientID,
     String clientSecret,
   ) async {
     final api = SpotifyApi(clientID, clientSecret);
-    final url = Uri.https('api.spotify.com', '/v1/search', {
-      'q': query,
-      'type': 'track, artist, album',
-    });
 
     return api.searchArtist(query);
   }
 
-  formatResponse(Map<String, dynamic> data) {
-    //Extract track name
-    String trackName = data['name'];
+  Future<Future<List<Track>>> searchSpotifyTracks(
+    String query,
+    String clientID,
+    String clientSecret,
+  ) async {
+    final api = SpotifyApi(clientID, clientSecret);
 
-    // Extract artist name/s
-    List<dynamic> artists = data['artists'];
-    List<String> artistNames = artists
-        .map((artist) => artist['name'] as String)
-        .toList();
-    String artistSTR = artistNames.join(', ');
-
-    // Extract album art (ex. the largest image)
-    List<dynamic> albumImages = data['album']['images'];
-    String? albumArtURL;
-    if (albumImages.isNotEmpty) {
-      albumArtURL = albumImages[0]['url'];
-    }
-
-    print('Track Name: $trackName');
-    print('Artist(s): $artistSTR');
-    if (albumArtURL != null) {
-      print('Album Art URL: $albumArtURL');
-    }
+    return api.searchTrack(query);
   }
 }
