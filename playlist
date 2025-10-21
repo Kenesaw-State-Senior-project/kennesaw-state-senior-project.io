@@ -40,10 +40,15 @@ check?.next=null;
 
 }
  void removeSong(T track){
+    
     if(head!.value==track){
         if(head!.next==null){
             head=null;
 
+        }
+        else{
+            head=head!.next;
+            head!.previous=null;
         }
 
 
@@ -54,17 +59,26 @@ while(check!.next!.value!=track){
 check=check.next;
 }
 if(check.next!=null){
-
+    if(check!.next!.next!=null){
+        
+        check.next=check.next!.next;
+        check.next!.next!.previous=check;
+    
+    }
+    else{
+        check.next=null;
+    }
 }
-check.previous=check;
-check?.next=null;
 }
  }
 
 
- void printNode<T>(){}
-
-
-
+ void printNode(){
+Node<T>? check= head; 
+while(check!.next!=null){
+print (check.value);
+check=check.next;}
 
 }
+
+ }
