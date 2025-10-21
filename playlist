@@ -1,0 +1,70 @@
+   class Node<T>{
+    T? value;
+    Node<T>? next;
+    Node<T>? previous;
+
+    Node(T value ){
+        this.value=value;
+     next=null;
+     previous=null;
+
+    }
+    }
+
+class playist<T>{
+Node<T>? head;
+Node<T>? tail;
+String name="";
+
+ 
+playist(String name ){
+this.name=name;
+head=null;
+tail=null;
+}
+
+
+void addSong(T track){
+if (head==null){
+    head=new Node<T>(track);
+    tail=head;
+}
+else{
+Node<T>? check= head; 
+while(check!.next!=null){
+check=check.next;}
+check.previous=check;
+check=check.next;
+check?.next=null;
+}
+
+}
+ void removeSong(T track){
+    if(head!.value==track){
+        if(head!.next==null){
+            head=null;
+
+        }
+
+
+    }
+    else{
+Node<T>? check= head; 
+while(check!.next!.value!=track){
+check=check.next;
+}
+if(check.next!=null){
+
+}
+check.previous=check;
+check?.next=null;
+}
+ }
+
+
+ void printNode<T>(){}
+
+
+
+
+}
