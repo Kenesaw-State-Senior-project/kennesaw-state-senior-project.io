@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/artist.dart';
 import '../models/track.dart';
+import '../models/album.dart';
 
 class SpotifyApi {
   final String clientID;
@@ -71,6 +72,21 @@ class SpotifyApi {
     return items.map((e) => Track.fromJson(e)).toList();
   }
 
+  Future<List<Album>> searchAlbum(String keyword,
+      {int limit = 20, int offset = 0}) async {
+    final response = await _get(
+        'https://api.spotify.com/v1/search?q=${Uri.encodeComponent(keyword)}&type=album&limit=$limit&offset=$offset');
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to search albums: ${response.statusCode}');
+    }
+
+    formatAlbumResponse(response);
+    final data = json.decode(response.body);
+    final List<dynamic> items = data['albums']['items'];
+    return items.map((e) => Album.fromJson(e)).toList();
+  }
+
   Future<List<Track>> getTopTracks(String artistID) async {
     final token = await _getAccessToken();
 
@@ -135,6 +151,14 @@ class SpotifyApi {
       }
     } else {
       print('Failed to load track search results: ${response.statusCode}');
+    }
+  }
+
+  void formatAlbumResponse(http.Response response) {
+    final data = json.decode(response.body);
+    final items = data['albums']?['items'] ?? [];
+    for (int i = 0; i < items.length; i++) {
+      print("Album ${i + 1}: ${items[i]['name']}");
     }
   }
 
