@@ -10,10 +10,6 @@ class Artist {
     final imgURL = (json['images'] as List).isNotEmpty
         ? json['images'][0]['url']
         : '';
-    return Artist(
-      id: json['id'],
-      name: json['name'],
-      imgURL: imgURL,
-    );
+    return Artist(id: json['id'], name: json['name'], imgURL: imgURL);
   }
 }

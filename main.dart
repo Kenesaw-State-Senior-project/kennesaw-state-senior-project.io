@@ -1,16 +1,26 @@
+// main.dart
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mobile_app/api/spotify_api.dart';
 import 'package:mobile_app/providers/music_provider.dart';
 import 'package:provider/provider.dart';
 import 'search.dart';
+import 'authorization.dart';
+import 'services/spotify_player.dart';
 
-void main() {
-  const clientId = 'b006b52f30d74faca0a2f9ba67ada433';
-  const clientSecret = 'c54f7757c3a64b5792cc276a77e81b5b';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  const clientId = 'cf72b6dcb97f43bfba40c07c968a429e';
+  const clientSecret = '1994a11fef4840c9b63161da58aacae0';
 
   final api = SpotifyApi(clientId, clientSecret);
+
+  if (!kIsWeb) {
+    await connectToSpotify();
+    await SpotifyPlayer.initialize();
+  }
 
   runApp(
     ChangeNotifierProvider(
@@ -32,7 +42,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         ),
-        home: MyHomePage(),
+        home: const MyHomePage(),
       ),
     );
   }
@@ -48,17 +58,19 @@ class MyAppState extends ChangeNotifier {
 
   var favorites = <WordPair>[];
 
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
+  void toggleFavorite(WordPair pair) {
+    if (favorites.contains(pair)) {
+      favorites.remove(pair);
     } else {
-      favorites.add(current);
+      favorites.add(pair);
     }
     notifyListeners();
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -71,9 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = GeneratorPage();
+        page = const GeneratorPage();
       case 1:
-        page = FavoritesPage();
+        page = const FavoritesPage();
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -86,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
               SafeArea(
                 child: NavigationRail(
                   extended: constraints.maxWidth >= 600,
-                  destinations: [
+                  destinations: const [
                     NavigationRailDestination(
                       icon: Icon(Icons.home),
                       label: Text('Home'),
@@ -101,12 +113,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     setState(() {
                       selectedIndex = value;
                     });
-
                     print('selected: $value');
                   },
                 ),
               ),
-
               Expanded(
                 child: Container(
                   color: Theme.of(context).colorScheme.primaryContainer,
@@ -122,6 +132,8 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class GeneratorPage extends StatelessWidget {
+  const GeneratorPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
@@ -134,59 +146,134 @@ class GeneratorPage extends StatelessWidget {
       icon = Icons.favorite_border;
     }
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SearchBox(),
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  appState.toggleFavorite();
-                },
-                icon: Icon(icon),
-                label: Text('Like'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  appState.getNext();
-                },
-                child: Text('Next'),
-              ),
-            ],
+    return Column(
+      children: [
+        const SearchBox(),
+        BigCard(pair: pair),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                appState.toggleFavorite(pair);
+              },
+              icon: Icon(icon),
+              label: const Text('Like'),
+            ),
+            const SizedBox(width: 10),
+            ElevatedButton(
+              onPressed: () {
+                appState.getNext();
+              },
+              child: const Text('Next'),
+            ),
+          ],
+        ),
+        // display tracks if available - Integrated playlist controls
+        Expanded(
+          child: Consumer<MusicProvider>(
+            builder: (context, musicProvider, child) {
+              if (musicProvider.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (musicProvider.tracks.isNotEmpty) {
+                return Column(
+                  children: [
+                    // Track List with Add/Remove Buttons
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: musicProvider.tracks.length,
+                        itemBuilder: (context, index) {
+                          final track = musicProvider.tracks[index];
+                          return ListTile(
+                            leading: Image.network(
+                              track.imgURL,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(Icons.music_note),
+                            ),
+                            title: Text(track.name),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.add,
+                                    color: Colors.green,
+                                  ),
+                                  onPressed: () =>
+                                      musicProvider.addToPlaylist(track),
+                                  tooltip: 'Add to Playlist',
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.remove,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () =>
+                                      musicProvider.removeFromPlaylist(track),
+                                  tooltip: 'Remove from Playlist',
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    // playlist Controls
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: musicProvider.printCurrentPlaylist,
+                            icon: const Icon(Icons.list),
+                            label: const Text('View Playlist'),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: musicProvider.clearPlaylist,
+                            icon: const Icon(Icons.clear),
+                            label: const Text('Clear Playlist'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
 class FavoritesPage extends StatelessWidget {
+  const FavoritesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
 
     if (appState.favorites.isEmpty) {
-      return Center(child: Text('No favorites yet.'));
+      return const Center(child: Text('No favorites yet.'));
     }
 
     return ListView(
       children: [
         Padding(
           padding: const EdgeInsets.all(20),
-          child: Text(
-            'You have '
-            '${appState.favorites.length} favorites:',
-          ),
+          child: Text('You have ${appState.favorites.length} favorites:'),
         ),
         for (var pair in appState.favorites)
           ListTile(
-            leading: Icon(Icons.favorite),
+            leading: const Icon(Icons.favorite),
             title: Text(pair.asLowerCase),
           ),
       ],
