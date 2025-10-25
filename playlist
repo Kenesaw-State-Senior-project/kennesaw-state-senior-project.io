@@ -2,22 +2,22 @@
     T? value;
     Node<T>? next;
     Node<T>? previous;
-
-    Node(T value ){
+    int id=0;
+    Node(T value,int id ){
         this.value=value;
      next=null;
      previous=null;
-
+     this.id=id;
     }
     }
 
-class playist<T>{
+class playlist<T>{
 Node<T>? head;
 Node<T>? tail;
-String name="";
-
+String? name="";
+int id=0;
  
-playist(String name ){
+playlist(String? name ){
 this.name=name;
 head=null;
 tail=null;
@@ -26,22 +26,25 @@ tail=null;
 
 void addSong(T track){
 if (head==null){
-    head=new Node<T>(track);
+    head=new Node<T>(track,id);
     tail=head;
+    id++;
 }
 else{
 Node<T>? check= head; 
 while(check!.next!=null){
 check=check.next;}
 check.previous=check;
+check?.next=new Node<T>(track,id);
 check=check.next;
 check?.next=null;
+id++;
 }
 
 }
- void removeSong(T track){
+ void removeSong(T id){
     
-    if(head!.value==track){
+    if(head!.value==id){
         if(head!.next==null){
             head=null;
 
@@ -55,7 +58,7 @@ check?.next=null;
     }
     else{
 Node<T>? check= head; 
-while(check!.next!.value!=track){
+while(check!.next!.value!=id){
 check=check.next;
 }
 if(check.next!=null){
