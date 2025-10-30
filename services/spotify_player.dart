@@ -17,8 +17,8 @@ class SpotifyPlayer {
     if (!_isInitialized) {
       try {
         await SpotifySdk.connectToSpotifyRemote(
-          clientId: 'cf72b6dcb97f43bfba40c07c968a429e',
-          redirectUrl: 'http://127.0.0.1:8080',
+          clientId: 'b006b52f30d74faca0a2f9ba67ada433',
+          redirectUrl: 'https://127.0.0.1:4767',
         );
         _isInitialized = true;
       } on PlatformException catch (e) {

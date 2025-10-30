@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:mobile_app/authorization.dart';
 
 import '../models/artist.dart';
 import '../models/track.dart';
-import '../models/album.dart';
+import 'package:http/http.dart' as http;
 
 class SpotifyApi {
   final String clientID;
@@ -22,10 +22,6 @@ class SpotifyApi {
       body: {'grant_type': 'client_credentials'},
     );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to get access token: ${response.statusCode}');
-    }
-
     final body = json.decode(response.body);
     return body['access_token'];
   }
@@ -34,15 +30,9 @@ class SpotifyApi {
     final token = await _getAccessToken();
 
     final response = await http.get(
-      Uri.parse(
-        'https://api.spotify.com/v1/search?q=${Uri.encodeComponent(keyword)}&type=artist',
-      ),
+      Uri.parse('https://api.spotify.com/v1/search?q=$keyword&type=artist'),
       headers: {'Authorization': 'Bearer $token'},
     );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to search artists: ${response.statusCode}');
-    }
 
     formatArtistResponse(response);
 
@@ -55,15 +45,9 @@ class SpotifyApi {
     final token = await _getAccessToken();
 
     final response = await http.get(
-      Uri.parse(
-        'https://api.spotify.com/v1/search?q=${Uri.encodeComponent(keyword)}&type=track',
-      ),
+      Uri.parse('https://api.spotify.com/v1/search?q=$keyword&type=track'),
       headers: {'Authorization': 'Bearer $token'},
     );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to search tracks: ${response.statusCode}');
-    }
 
     formatTrackResponse(response);
 
@@ -72,45 +56,31 @@ class SpotifyApi {
     return items.map((e) => Track.fromJson(e)).toList();
   }
 
-  Future<List<Album>> searchAlbum(String keyword,
-      {int limit = 20, int offset = 0}) async {
-    final response = await _get(
-        'https://api.spotify.com/v1/search?q=${Uri.encodeComponent(keyword)}&type=album&limit=$limit&offset=$offset');
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to search albums: ${response.statusCode}');
-    }
-
-    formatAlbumResponse(response);
-    final data = json.decode(response.body);
-    final List<dynamic> items = data['albums']['items'];
-    return items.map((e) => Album.fromJson(e)).toList();
-  }
-
   Future<List<Track>> getTopTracks(String artistID) async {
-    final token = await _getAccessToken();
+    final token = await getAccessToken();
 
     final response = await http.get(
       Uri.parse(
-        'https://api.spotify.com/v1/artists/$artistID/top-tracks?country=US',
+        'https://api.spotify.com/v1/artists/$artistID/top-tracks?country=ID',
       ),
       headers: {'Authorization': 'Bearer $token'},
     );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to get top tracks: ${response.statusCode}');
-    }
-
-    formatTrackResponse(response);
-
     final data = json.decode(response.body);
+    if (data['artists']['items'][0]['id'] == artistID) {
+      formatTrackResponse(response);
+    }
     final List<dynamic> items = data['tracks'];
     return items.map((e) => Track.fromJson(e)).toList();
   }
 
-  void formatArtistResponse(http.Response response) {
+  formatArtistResponse(final response) {
     if (response.statusCode == 200) {
+      // Decode JSON
       Map<String, dynamic> data = json.decode(response.body);
+
+      // Process search results from JSON response
+      //print("Artist Search Successful: $data");
 
       final List<String> artistNames = [];
 
@@ -123,17 +93,24 @@ class SpotifyApi {
         }
       }
 
-      for (int count = 0; count < artistNames.length; count++) {
-        print("Artist ${count + 1}: ${artistNames[count]}");
+      String name = "";
+      int count = 0;
+      for (name in artistNames) {
+        count += 1;
+        print("Artist $count: $name");
       }
     } else {
-      print('Failed to load artist search results: ${response.statusCode}');
+      throw Exception('Failed to load search results: ${response.statusCode}');
     }
   }
 
-  void formatTrackResponse(http.Response response) {
+  formatTrackResponse(final response) {
     if (response.statusCode == 200) {
+      // Decode JSON
       Map<String, dynamic> data = json.decode(response.body);
+
+      // Process search results from JSON response
+      //print("Track Search Successful: $data");
 
       final List<String> trackNames = [];
 
@@ -146,27 +123,23 @@ class SpotifyApi {
         }
       }
 
-      for (int count = 0; count < trackNames.length; count++) {
-        print("Track ${count + 1}: ${trackNames[count]}");
+      String name = "";
+      int count = 0;
+      for (name in trackNames) {
+        count += 1;
+        print("Track $count: $name");
       }
-    } else {
-      print('Failed to load track search results: ${response.statusCode}');
-    }
-  }
 
-  void formatAlbumResponse(http.Response response) {
-    final data = json.decode(response.body);
-    final items = data['albums']?['items'] ?? [];
-    for (int i = 0; i < items.length; i++) {
-      print("Album ${i + 1}: ${items[i]['name']}");
+    } else {
+      throw Exception('Failed to load search results: ${response.statusCode}');
     }
   }
 
   Future<String?> getArtistIdDirect(String artistName) async {
-    final token = await _getAccessToken();
+    final token = await getAccessToken();
     final response = await http.get(
       Uri.parse(
-        'https://api.spotify.com/v1/search?q=${Uri.encodeComponent(artistName)}&type=artist&limit=1',
+        'https://api.spotify.com/v1/search?q=$artistName&type=artist&limit=1',
       ),
       headers: {'Authorization': 'Bearer $token'},
     );

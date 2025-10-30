@@ -1,8 +1,8 @@
 // lib/models/playlist_node.dart -fixed and encapsulated Node class
-class PlaylistNode<T> {
-  T? value;
-  PlaylistNode<T>? next;
-  PlaylistNode<T>? previous;
+class PlaylistNode<Track> {
+  Track? value;
+  PlaylistNode<Track>? next;
+  PlaylistNode<Track>? previous;
 
   PlaylistNode(this.value) {
     next = null;

@@ -1,10 +1,17 @@
 // lib/models/playlist.dart
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
+import 'package:mobile_app/api/spotify_api.dart';
 import 'package:mobile_app/models/playlist_node.dart';
+import 'package:mobile_app/models/track.dart';
+import 'package:mobile_app/providers/music_provider.dart';
+import 'package:provider/provider.dart';
 
 class Playlist<T> {
   PlaylistNode<T>? head;
   PlaylistNode<T>? tail;
   String name = "";
+  List<Track> trackList = [];
 
   Playlist(this.name) {
     head = null;
@@ -14,6 +21,7 @@ class Playlist<T> {
   // adds a song/track to the end of the playlist
   void addSong(T track) {
     final newNode = PlaylistNode<T>(track);
+    trackList.add(track as Track);
     if (head == null) {
       head = newNode;
       tail = newNode;
@@ -21,7 +29,7 @@ class Playlist<T> {
       tail!.next = newNode;
       newNode.previous = tail;
       tail = newNode;
-    }
+    }      
   }
 
   // removes the first occurrence of the song/track by value comparison
@@ -47,13 +55,16 @@ class Playlist<T> {
     } else {
       tail = current.previous;
     }
+    trackList.remove(track);
   }
 
   void printPlaylist() {
     PlaylistNode<T>? current = head;
+    int count = 0;
     while (current != null) {
-      print(current.value);
+      print(trackList[count].name);
       current = current.next;
+      count += 1;
     }
   }
 
@@ -70,5 +81,21 @@ class Playlist<T> {
   void clear() {
     head = null;
     tail = null;
+  }
+
+  Track getTrack(int index) {
+    PlaylistNode<T>? current = head;
+    for (int i = 0; i < index - 1; i++) {
+      current = current?.next;
+    }
+    return current?.value as Track;
+  }
+
+  bool isEmpty() {
+    if (trackList.isEmpty) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

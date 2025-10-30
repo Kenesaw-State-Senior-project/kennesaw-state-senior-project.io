@@ -4,6 +4,8 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:mobile_app/api/spotify_api.dart';
+import 'package:mobile_app/models/playlist.dart';
+import 'package:mobile_app/models/track.dart';
 import 'package:mobile_app/providers/music_provider.dart';
 import 'package:provider/provider.dart';
 import 'search.dart';
@@ -259,22 +261,24 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
+    var musicProvider = context.watch<MusicProvider>();
+    final savedTracks = musicProvider.currentPlaylist;
 
-    if (appState.favorites.isEmpty) {
-      return const Center(child: Text('No favorites yet.'));
+    if (savedTracks.isEmpty()) {
+      return const Center(child: Text('No saved tracks yet.'));
     }
 
     return ListView(
       children: [
         Padding(
           padding: const EdgeInsets.all(20),
-          child: Text('You have ${appState.favorites.length} favorites:'),
+          child: Text('You have ${musicProvider.currentPlaylist.length} saved songs:'),
         ),
-        for (var pair in appState.favorites)
+        // ignore: unused_local_variable
+        for (var track in savedTracks.trackList)
           ListTile(
             leading: const Icon(Icons.favorite),
-            title: Text(pair.asLowerCase),
+            title: Text(track.name),
           ),
       ],
     );

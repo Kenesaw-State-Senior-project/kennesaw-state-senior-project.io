@@ -89,4 +89,9 @@ class MusicProvider with ChangeNotifier {
     _currentPlaylist.clear();
     notifyListeners();
   }
+
+  Track traversePlaylist(int index) {
+    return currentPlaylist.getTrack(index);
+  }
+  
 }

@@ -20,4 +20,5 @@ class Track {
       uri: json['uri'],
     );
   }
+
 }
