@@ -16,6 +16,7 @@ Node<T>? head;
 Node<T>? tail;
 String? name="";
 int id=0;
+int position=0;
  
 playlist(String? name ){
 this.name=name;
@@ -29,16 +30,19 @@ if (head==null){
     head=new Node<T>(track,id);
     tail=head;
     id++;
+    position++;
 }
 else{
 Node<T>? check= head; 
 while(check!.next!=null){
 check=check.next;}
 check.previous=check;
+
 check?.next=new Node<T>(track,id);
 check=check.next;
 check?.next=null;
 id++;
+position++;
 }
 
 }
@@ -83,5 +87,32 @@ print (check.value);
 check=check.next;}
 
 }
+T? returnsong(int position){
+  if(position==0){
+    return head?.value;
+  }
+  else{
+    Node<T>? check= head; 
 
- }
+    for(int num=0;num<position;num++){
+    check=check!.next;
+  }
+  return check?.value;
+  }
+
+}
+int returnid(int idvalue){
+
+    if(position==0){
+    return head!.id;
+  }
+  else{
+    Node<T>? check= head; 
+
+    for(int num=0;num<position;num++){
+    check=check!.next;
+  }
+  return check!.id;
+  }
+
+}
