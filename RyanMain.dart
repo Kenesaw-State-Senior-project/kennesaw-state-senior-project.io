@@ -17,23 +17,7 @@ void main() {
 
   runApp(MyApp());
 }
-class playlistform extends StatefulWidget{
-  const playlistform({super.key});
-  @override
-State<playlistform> createState() => PlaylistFormState();
-}
-class PlaylistFormState extends State<playlistform>{
 
-  final playcontroller=TextEditingController();
-  void dispose(){
-    
-  }
-  
-  
-  @override
-   Widget build(BuildContext context){
-  }
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -64,6 +48,8 @@ class MyAppState extends ChangeNotifier {
   var favorites = <String?>[];
 
   void toggleFavorite() {
+  
+  
     if (favorites.contains(current)) {
       favorites.remove(current);
     } else {
@@ -162,7 +148,29 @@ class GeneratorPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton.icon(
-                onPressed: () {
+                onPressed: () {    
+                  showDialog(context: context, 
+    
+    builder: (BuildContext context){
+      return AlertDialog(
+        title:const Text("Enter a playlist name"),
+        content: Form(child: TextFormField( 
+        decoration: InputDecoration(
+          hintText: 'Enter playlist',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+          //icon:Icon(Icon.FavoritesPage)
+        ),
+        
+        
+      ),
+      ),
+      
+      actions: [],
+      );
+  
+    }
+    
+    );
                   appState.toggleFavorite();
                 },
                 icon: Icon(icon),
@@ -182,35 +190,7 @@ class GeneratorPage extends StatelessWidget {
     );
   }
 }
-class playistshow extends StatefulWidget{
-  PlaylistFormState play=PlaylistFormState();
-  
-  void _showdialog(BuildContext context){
-    showDialog(context: context, 
-    
-    builder: (BuildContext context){
-      return AlertDialog(
-        title:const Text("Enter a playlist name"),
-        content: Form(child: TextField( controller: play.playcontroller,
-        decoration: InputDecoration(
-          hintText: 'Enter playlist',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-          //icon:Icon(Icon.FavoritesPage)
-        ),
-        
-        
-      ),
-      ),
-      
-      actions: [],
-      );
-  
-    }
-    
-    );
-  
-  }
-}
+
 
 class FavoritesPage extends StatelessWidget {
   @override
