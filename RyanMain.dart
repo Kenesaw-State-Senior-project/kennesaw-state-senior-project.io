@@ -46,14 +46,15 @@ class MyAppState extends ChangeNotifier {
   }
 
   var favorites = <String?>[];
-
-  void toggleFavorite() {
+//New code 
+  void toggleFavorite(String? current) {
   
-  
+  String? name=current;
     if (favorites.contains(current)) {
+  
       favorites.remove(current);
     } else {
-      String? name;
+  
        playlist current=new playlist(name);
       favorites.add(current.name);
     }
@@ -125,6 +126,8 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class GeneratorPage extends StatelessWidget {
+var Namecontrol=TextEditingController();
+  
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
@@ -149,12 +152,14 @@ class GeneratorPage extends StatelessWidget {
             children: [
               ElevatedButton.icon(
                 onPressed: () {    
+                  //New code
                   showDialog(context: context, 
     
     builder: (BuildContext context){
       return AlertDialog(
         title:const Text("Enter a playlist name"),
         content: Form(child: TextFormField( 
+          controller: Namecontrol,
         decoration: InputDecoration(
           hintText: 'Enter playlist',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -165,13 +170,29 @@ class GeneratorPage extends StatelessWidget {
       ),
       ),
       
-      actions: [],
+      actions: [
+        TextButton(onPressed: (){
+
+          var name=Namecontrol.text;
+            appState.toggleFavorite(name);
+          Navigator.pop(context);
+        }, child: Text("Enter")),
+
+
+        TextButton(onPressed: (){
+
+          Navigator.pop(context);
+        }, child: Text("Cancel"))
+
+        
+
+      ],
       );
   
     }
     
     );
-                  appState.toggleFavorite();
+                
                 },
                 icon: Icon(icon),
                 label: Text('Like'),
