@@ -58,13 +58,15 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  var favorites = <WordPair>[];
+  var favorites = <String>[];
 
-  void toggleFavorite(WordPair pair) {
-    if (favorites.contains(pair)) {
-      favorites.remove(pair);
+  void toggleFavorite(String? current) {
+    String? name = current;
+    if (favorites.contains(current)) {
+      favorites.remove(current);
     } else {
-      favorites.add(pair);
+      Playlist current = Playlist(name!);
+      favorites.add(current.name);
     }
     notifyListeners();
   }
@@ -85,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = const GeneratorPage();
+        page = GeneratorPage();
       case 1:
         page = const FavoritesPage();
       default:
@@ -107,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
+                      label: Text('Playlists'),
                     ),
                   ],
                   selectedIndex: selectedIndex,
@@ -134,7 +136,8 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class GeneratorPage extends StatelessWidget {
-  const GeneratorPage({super.key});
+  //const GeneratorPage({super.key});
+  final nameControl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -151,25 +154,63 @@ class GeneratorPage extends StatelessWidget {
     return Column(
       children: [
         const SearchBox(),
-        BigCard(pair: pair),
+        //BigCard(pair: pair),
         const SizedBox(height: 10),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             ElevatedButton.icon(
               onPressed: () {
-                appState.toggleFavorite(pair);
+                showDialog(
+                  context: context,
+
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Enter a playlist name"),
+                      content: Form(
+                        child: TextFormField(
+                          controller: nameControl,
+                          decoration: InputDecoration(
+                            hintText: 'Enter playlist',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            //icon:Icon(Icon.FavoritesPage)
+                          ),
+                        ),
+                      ),
+
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            var name = nameControl.text;
+                            appState.toggleFavorite(name);
+                            Navigator.pop(context);
+                          },
+                          child: Text("Enter"),
+                        ),
+
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Cancel"),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
-              icon: Icon(icon),
-              label: const Text('Like'),
+              //icon: Icon(icon),
+              label: const Text('New Playlist'),
             ),
             const SizedBox(width: 10),
-            ElevatedButton(
+           /* ElevatedButton(
               onPressed: () {
                 appState.getNext();
               },
               child: const Text('Next'),
-            ),
+            ),*/
           ],
         ),
         // display tracks if available - Integrated playlist controls
@@ -225,7 +266,7 @@ class GeneratorPage extends StatelessWidget {
                         },
                       ),
                     ),
-                    // playlist Controls
+                    // Playlist Controls
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -261,24 +302,32 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var musicProvider = context.watch<MusicProvider>();
-    final savedTracks = musicProvider.currentPlaylist;
+    // var musicProvider = context.watch<MusicProvider>();
+    var appState = context.watch<MyAppState>();
 
-    if (savedTracks.isEmpty()) {
-      return const Center(child: Text('No saved tracks yet.'));
+    // final savedTracks = musicProvider.currentPlaylist;
+
+    //    if (savedTracks.isEmpty()) {
+    //      return const Center(child: Text('No saved tracks yet.'));
+    //    }
+
+    if (appState.favorites.isEmpty) {
+      return Center(child: Text('No playlist yet.'));
     }
 
     return ListView(
       children: [
         Padding(
           padding: const EdgeInsets.all(20),
-          child: Text('You have ${musicProvider.currentPlaylist.length} saved songs:'),
+          child: Text(
+            'You have ${appState.favorites.length} playlist(s):',
+          ),
         ),
         // ignore: unused_local_variable
-        for (var track in savedTracks.trackList)
+        for (String? playlist in appState.favorites)
           ListTile(
-            leading: const Icon(Icons.favorite),
-            title: Text(track.name),
+            leading: Icon(Icons.favorite),
+            title: Text(playlist!),
           ),
       ],
     );
